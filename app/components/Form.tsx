@@ -19,6 +19,7 @@ export default function Form({ data }: {data: any}) {
     const formRef = useRef<HTMLFormElement>(null);
     const { data: session } = useSession();
 
+    //OPTIMISTIC DATA DOESNT APPLY TO EDIT AND DELETE FUNCTION, IT DOESNT SHOW UP THE NEW DATA MUTATED
     const [optimisticData, addOptimisticData] = useOptimistic(
       data, 
       (state, optimisticVal: Tasktype) => {
