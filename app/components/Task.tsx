@@ -1,13 +1,13 @@
 
+'use client'
 
 import { SlidersHorizontal } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
 import { Tasktype, typedata } from '../lib/type'
 import TaskLists from './TaskLists'
-import { getAllTaskList } from '../lib/actions'
 
 
-export default function Task({ data }: { data: Tasktype[] | Error }) {
+
+export default function Task({ data }: { data: Tasktype[] | Error | any}) {
   // Render your component using the data
   return (
     <div>
@@ -23,7 +23,7 @@ export default function Task({ data }: { data: Tasktype[] | Error }) {
       <div className='flex flex-col gap-8 items-start mt-10'>
         {Array.isArray(data) ? (
           data.map((item: Tasktype) => (
-            <TaskLists key={item.id} data={item} />
+            <TaskLists key={item.id} data={item}/>
           ))
         ) : (
           <div>

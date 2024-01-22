@@ -1,25 +1,49 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React, { useOptimistic, useRef } from 'react'
 import { useFormState, useFormStatus } from 'react-dom';
 import { addTask } from '../lib/actions';
 import { Plus } from 'lucide-react';
+import Task from './Task';
+import { Tasktype } from '../lib/type';
+import { useSession } from 'next-auth/react';
 
 
 export const status = {
     message: ''
 }
 
-export default function Form() {
+export default function Form({ data }: {data: any}) {
     const [state, formAction] = useFormState(addTask, status);
     const { pending } = useFormStatus();
+    const formRef = useRef<HTMLFormElement>(null);
+    const { data: session } = useSession();
 
-    const taskInputRef = useRef(null);
+    const [optimisticData, addOptimisticData] = useOptimistic(
+      data, 
+      (state, optimisticVal: Tasktype) => {
+          return [...state, optimisticVal];
+      })
 
+    const taskInputRef = useRef<HTMLFormElement>(null);
    
+  
   return (
    <div>
-     <form action={formAction}  className='flex items-end gap-4'>
+     <form
+     ref={formRef}
+     action={async (formData) => {
+       addOptimisticData({
+         id: Math.random(),
+         title: formData.get('task') as string,
+         userId: session?.user?.email as string,
+         createdAt: new Date(),
+         updatedAt: null
+       });
+       formRef.current?.reset();
+       formAction(formData)
+     
+     }}  className='flex items-end gap-4'>
       <div className='border-b-2 border-[#EC365B] h-[65px] w-[500px] rounded-xl'>
       <input 
         required
@@ -31,7 +55,7 @@ export default function Form() {
      </div>
 
     <button
-      aria-disabled={pending}
+      disabled={pending}
       type='submit'
       className='bg-purple-600 flex items-center justify-center duration-200 ease-in-out cursor-pointer hover:bg-purple-400 w-[50px] h-[50px]'>
       <Plus 
@@ -46,6 +70,8 @@ export default function Form() {
        <div>
           <p className='text-gray-500 text-md'>{state?.message}</p>
        </div> 
+
+       <Task data={optimisticData}/>
    </div>
   )
 }

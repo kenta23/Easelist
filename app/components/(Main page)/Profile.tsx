@@ -3,7 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
+
 
 
 export default function Profile() {

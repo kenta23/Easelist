@@ -1,11 +1,12 @@
 "use client"
 
-import { SlidersHorizontal, PencilLine, Trash } from 'lucide-react'
-import React, { useState } from 'react'
+import { PencilLine, Trash } from 'lucide-react'
+import React, { useOptimistic, useState } from 'react'
 import { deleteItem, updateItem } from '../lib/actions'
 import { useFormState, useFormStatus } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { Tasktype } from '../lib/type';
+
 
 const statusdelete = {
    message: ''
@@ -18,26 +19,10 @@ export default function TaskLists({ data }: { data: Tasktype}) {
    const [ edit, setEdit ] = useState<boolean>(false);
    const { pending } = useFormStatus();
    const router = useRouter()
-   //const updateAction = updateItem.bind(null, data.id);
-   //const deleteAction = deleteItem.bind(null, data.id);
+
    const [state, deleteAction] = useFormState(deleteItem, statusdelete);
    const [stateUpdate, updateAction] = useFormState(updateItem, statusUpdate);
 
-
-  function handleSubmit(e: React.FormEvent) {
-      e.preventDefault();
-
-      setEdit(false);
-      console.log("Submitted data")
-  }
-
-  function handleUpdate (e: React.FormEvent) {
-     e.preventDefault()
-
-     setEdit(false);
-     console.log("Submitted data")
-     router.refresh();
-  }
 
   return (
       <div>
@@ -81,7 +66,8 @@ export default function TaskLists({ data }: { data: Tasktype}) {
                      />
                    </button>
 
-                   <button type='submit' formAction={deleteAction} className='w-[35px] flex items-center justify-center h-[35px] rounded-full bg-red-600'>
+                   <button type='submit' formAction={deleteAction}
+                    className='w-[35px] flex items-center justify-center h-[35px] rounded-full bg-red-600'>
                      <Trash 
                          color='#ffff'
                          width={25}
